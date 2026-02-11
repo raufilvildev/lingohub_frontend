@@ -1,0 +1,25 @@
+<div class="w-full md:py-10 flex items-center">
+  <div class="w-full max-w-100 p-5 mx-auto">
+    <div class="w-full flex flex-col gap-10">
+      <h2 class="font-bold text-xl mx-auto">Regístrate en LingoHub</h2>
+      <app-form
+        class="w-full"
+        [inputs]="inputs"
+        (isFormValidOutput)="IsSignupFormValid.set($event)"
+        (formValueOutput)="signupUser.set($event)"
+      ></app-form>
+      <div class="flex flex-col gap-5">
+        @if (generalError()) {
+          <p class="text-error text-center">{{ generalError() }}</p>
+        }
+        <button
+          class="primary-button w-fit mx-auto"
+          [disabled]="!IsSignupFormValid()"
+          (click)="signup()"
+        >
+          Registrarse
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

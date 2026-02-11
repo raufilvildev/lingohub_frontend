@@ -1,0 +1,18 @@
+<div class="w-full py-3 flex justify-between items-center select-none">
+  <div class="flex items-center gap-5 cursor-pointer" [routerLink]="['/']">
+    <img src="images/logo.png" alt="Logo de LingoHub" class="w-10 h-10" />
+    <h1 class="text-2xl font-bold text-sky-800">LingoHub</h1>
+  </div>
+  <ul class="flex items-center gap-5">
+    @let buttonLinks =
+      [
+        { to: ['/login'], text: 'INICIAR SESIÓN' },
+        { to: ['/signup'], text: 'REGISTRARSE' },
+      ];
+    @for (item of buttonLinks; track $index) {
+      <li class="font-medium hover:scale-101 hover:text-sky-400 transition-all duration-100">
+        <a [routerLink]="item.to">{{ item.text }}</a>
+      </li>
+    }
+  </ul>
+</div>

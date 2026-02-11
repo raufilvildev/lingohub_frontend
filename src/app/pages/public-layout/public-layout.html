@@ -1,0 +1,12 @@
+<div class="w-screen h-screen flex flex-col items-stretch overflow-hidden">
+  <div class="border-b border-b-gray-100">
+    <app-header class="w-full max-w-7xl flex items-stretch mx-auto"></app-header>
+  </div>
+  <main class="w-full overflow-y-auto flex-1">
+    <div
+      class="w-full max-w-7xl min-h-full mx-auto flex flex-col justify-center [&>*:not(router-outlet)]:min-h-full [&>*:not(router-outlet)]:flex [&>*:not(router-outlet)]:items-stretch"
+    >
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,65 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'tailwindcss';
+
+@utility button {
+  @apply px-4 py-2.5;
+}
+
+.primary-button {
+  @apply button text-white bg-sky-600 rounded-lg font-medium hover:bg-sky-800 cursor-pointer disabled:bg-sky-600/25 disabled:cursor-default;
+}
+
+.secondary-button {
+  @apply button text-sky-700 bg-sky-200  rounded-lg font-medium hover:bg-sky-600 cursor-pointer hover:text-white disabled:text-sky-950/25 disabled:bg-sky-200/25 disabled:hover:text-sky-950/25 disabled:cursor-default;
+}
+
+.label {
+  @apply text-sm font-medium;
+}
+
+.input {
+  @apply w-full px-3 py-2 outline-none hover:bg-gray-50 focus:bg-gray-100 rounded-lg border border-gray-200 text-sm;
+}
+
+.input-with-icon {
+  @apply pr-10;
+}
+
+.input-error {
+  @apply border-red-600;
+}
+
+.input-icon {
+  @apply w-4 h-4 absolute top-1/2 right-3 -translate-y-1/2;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-white) inset;
+  -webkit-text-fill-color: var(--color-gray-950);
+  caret-color: var(--color-gray-950);
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-gray-50) inset;
+}
+
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-gray-100) inset;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.text-error {
+  @apply text-red-600 text-sm italic;
+}

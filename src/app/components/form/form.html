@@ -1,0 +1,59 @@
+<form class="w-full flex flex-col items-stretch gap-5" [formGroup]="form">
+  @for (input of inputs(); track $index) {
+    <fieldset class="flex flex-col items-stretch gap-2.5">
+      @let name = input.name;
+      @let isInputTypePassword = input.type === 'password';
+      @let isInputTypePasswordAndVisible =
+        (name === 'password' && showPassword()) ||
+        (name === 'confirm_password' && showConfirmPassword());
+      <div class="flex justify-between items-center">
+        <label [for]="name" class="label">{{ input.label }}</label>
+        @if (showForgotPassword() && isInputTypePassword) {
+          <a
+            [routerLink]="['/forgot_password']"
+            class="text-xs text-sky-400 hover:text-sky-500 hover:underline"
+            >¿Has olvidado la contraseña?</a
+          >
+        }
+      </div>
+      <div class="relative">
+        @let control = form.get(name);
+        @let invalidControl = control?.invalid && (control?.dirty || control?.touched);
+        <input
+          [id]="name"
+          [type]="
+            isInputTypePassword
+              ? isInputTypePasswordAndVisible
+                ? 'text'
+                : 'password'
+              : (input.type ?? 'text')
+          "
+          class="w-full input"
+          [class.input-with-icon]="isInputTypePassword"
+          [class.input-error]="invalidControl"
+          [formControlName]="name"
+          (input)="onInput()"
+        />
+        @if (isInputTypePassword) {
+          <img
+            [src]="
+              isInputTypePasswordAndVisible ? 'images/icon_eye_slash.svg' : 'images/icon_eye.svg'
+            "
+            alt="Icono de mostrar / ocultar contraseña"
+            class="input-icon cursor-pointer"
+            (click)="togglePasswordVisibility(name)"
+          />
+        }
+      </div>
+      @if (invalidControl && getControlErrors(control, input)) {
+        <ul class="ml-5 flex flex-col gap-1 list-disc">
+          @for (error of getControlErrors(control, input); track $index) {
+            @if (error) {
+              <li class="text-error">{{ error }}</li>
+            }
+          }
+        </ul>
+      }
+    </fieldset>
+  }
+</form>
