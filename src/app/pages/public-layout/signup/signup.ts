@@ -5,6 +5,7 @@ import { Validators } from '@angular/forms';
 import { ISignupUser } from '../../../interfaces/users/i-signup-user';
 import { UsersService } from '../../../services/users-service';
 import { passwordsMatch } from '../../../utils/form/validators/passwordsMatch';
+import { min } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
@@ -84,13 +85,17 @@ export class Signup {
       type: 'password',
       validators: [
         Validators.required,
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/),
+        Validators.minLength(8),
+        Validators.maxLength(100),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])$/),
         passwordsMatch,
       ],
       validationErrorMessages: {
         required: 'El campo contraseña es obligatorio.',
+        minlength: 'El campo contraseña debe tener al menos 8 caracteres.',
+        maxlength: 'El campo contraseña no puede tener más de 100 caracteres.',
         pattern:
-          'El campo contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una letra minúscula, un número y un carácter especial.',
+          'El campo contraseña debe incluir una letra mayúscula, una letra minúscula, un número y un carácter especial.',
         passwordsdontmatch: 'Las contraseñas no coinciden.',
       },
     },
