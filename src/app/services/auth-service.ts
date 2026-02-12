@@ -27,7 +27,9 @@ export class AuthService {
 
   async login(loginUser: ILoginUser): Promise<void> {
     const result: ITokenResponse = await lastValueFrom(
-      this.httpClient.post<ITokenResponse>(`${this.endpoint}/login`, loginUser),
+      this.httpClient.post<ITokenResponse>(`${this.endpoint}/login`, loginUser, {
+        withCredentials: true,
+      }),
     );
     this.setAccessToken(result.access_token);
     this.router.navigate(['/dashboard']);
@@ -35,7 +37,7 @@ export class AuthService {
 
   async logout(): Promise<void> {
     this.setAccessToken(null);
-    await this.httpClient.post<void>(`${this.endpoint}/logout`, {});
+    await this.httpClient.post<void>(`${this.endpoint}/logout`, {}, { withCredentials: true });
     this.router.navigate(['/']);
   }
 
@@ -55,12 +57,15 @@ export class AuthService {
   async refresh(): Promise<void> {
     try {
       const result: ITokenResponse = await lastValueFrom(
-        this.httpClient.post<ITokenResponse>(`${this.endpoint}/refresh`, {}),
+        this.httpClient.post<ITokenResponse>(
+          `${this.endpoint}/refresh`,
+          {},
+          { withCredentials: true },
+        ),
       );
       this.setAccessToken(result.access_token);
     } catch (errorResponse: any) {
-      console.log(errorResponse.error);
-      this.logout();
+      this.setAccessToken(null);
     }
   }
 }

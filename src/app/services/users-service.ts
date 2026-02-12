@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 import { IUser } from '../interfaces/users/i-user';
 import { ISignupUser } from '../interfaces/users/i-signup-user';
@@ -19,13 +19,21 @@ export class UsersService {
 
   private endpoint: string = `${environment.apiUrl}/users`;
 
-  async getMyUser(): Promise<IUser> {
-    return await lastValueFrom(this.httpClient.get<IUser>(this.endpoint));
+  private user: WritableSignal<IUser | null> = signal(null);
+
+  async getMyUser(): Promise<void> {
+    try {
+      this.user.set(await lastValueFrom(this.httpClient.get<IUser>(`${this.endpoint}/me`)));
+    } catch (error) {
+      this.user.set(null);
+    }
   }
 
   async signup(signupUser: ISignupUser): Promise<void> {
     const result: ITokenResponse = await lastValueFrom(
-      this.httpClient.post<ITokenResponse>(`${this.endpoint}/signup`, signupUser),
+      this.httpClient.post<ITokenResponse>(`${this.endpoint}/signup`, signupUser, {
+        withCredentials: true,
+      }),
     );
     this.authService.setAccessToken(result.access_token);
     this.router.navigate(['/dashboard']);
@@ -33,7 +41,7 @@ export class UsersService {
 
   async update(updateUser: IUpdateUser): Promise<void> {
     const result: ITokenResponse = await lastValueFrom(
-      this.httpClient.put<ITokenResponse>(this.endpoint, updateUser),
+      this.httpClient.put<ITokenResponse>(this.endpoint, updateUser, { withCredentials: true }),
     );
     this.authService.setAccessToken(result.access_token);
   }

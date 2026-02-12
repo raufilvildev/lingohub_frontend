@@ -5,14 +5,14 @@ import { from, Observable, switchMap } from 'rxjs';
 
 const EXCLUDE_URLS: Record<string, string[]> = {
   GET: [],
-  POST: ['users/signup', 'auth/validate', '/auth/login', '/auth/refresh', '/auth/logout'],
+  POST: ['/users/signup', '/auth/validate', '/auth/login', '/auth/refresh', '/auth/logout'],
   PUT: [],
   DELETE: [],
 };
 
 function setAuthorizationHeader(req: HttpRequest<unknown>, access_token: string | null) {
   return req.clone({
-    setHeaders: { Authorization: `Bearer ${access_token}` },
+    setHeaders: { Authorization: access_token ?? '' },
   });
 }
 
