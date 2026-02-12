@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, effect, inject, Signal, signal, WritableSignal } from '@angular/core';
 import { Form } from '../../../components/form/form';
 import { IFormInput } from '../../../interfaces/form/i-form-input';
 import { Validators } from '@angular/forms';
@@ -6,6 +6,8 @@ import { ISignupUser } from '../../../interfaces/users/i-signup-user';
 import { UsersService } from '../../../services/users-service';
 import { passwordsMatch } from '../../../utils/form/validators/passwordsMatch';
 import { min } from 'rxjs';
+import { ISignupForm } from '../../../interfaces/users/i-signup-form';
+import { email } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-signup',
@@ -17,7 +19,7 @@ export class Signup {
   constructor() {
     effect(() => {
       if (!this.IsSignupFormValid()) {
-        this.signupUser.set(null);
+        this.signupForm.set(null);
       }
     });
   }
@@ -25,13 +27,29 @@ export class Signup {
   private usersService = inject(UsersService);
 
   IsSignupFormValid: WritableSignal<boolean> = signal(false);
-  signupUser: WritableSignal<ISignupUser | null> = signal(null);
+  signupForm: WritableSignal<ISignupForm | null> = signal(null);
+  signupUser: Signal<ISignupUser | null> = computed(() => {
+    const signupForm: ISignupForm | null = this.signupForm();
+
+    if (!signupForm) {
+      return null;
+    }
+
+    return {
+      name: signupForm.name,
+      last_name: signupForm.last_name,
+      email: signupForm.email,
+      username: signupForm.username,
+      password: signupForm.password,
+    };
+  });
 
   inputs: IFormInput[] = [
     {
       name: 'name',
       label: 'Nombre',
       value: '',
+      autocomplete: 'given-name',
       validators: [Validators.required, Validators.minLength(3), Validators.maxLength(100)],
       validationErrorMessages: {
         required: 'El campo Nombre es obligatorio.',
@@ -43,6 +61,7 @@ export class Signup {
       name: 'last_name',
       label: 'Apellidos',
       value: '',
+      autocomplete: 'family-name',
       validators: [Validators.required, Validators.minLength(3), Validators.maxLength(255)],
       validationErrorMessages: {
         required: 'El campo Apellidos es obligatorio.',
@@ -54,6 +73,7 @@ export class Signup {
       name: 'email',
       label: 'Correo electrónico',
       value: '',
+      autocomplete: 'email',
       validators: [
         Validators.required,
         Validators.minLength(3),
@@ -71,6 +91,7 @@ export class Signup {
       name: 'username',
       label: 'Usuario',
       value: '',
+      autocomplete: 'username',
       validators: [Validators.required, Validators.minLength(3), Validators.maxLength(100)],
       validationErrorMessages: {
         required: 'El campo Usuario es obligatorio.',
@@ -82,12 +103,13 @@ export class Signup {
       name: 'password',
       label: 'Contraseña',
       value: '',
+      autocomplete: 'new-password',
       type: 'password',
       validators: [
         Validators.required,
         Validators.minLength(8),
         Validators.maxLength(100),
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])$/),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/),
         passwordsMatch,
       ],
       validationErrorMessages: {
@@ -103,6 +125,7 @@ export class Signup {
       name: 'confirm_password',
       label: 'Confirma contraseña',
       value: '',
+      autocomplete: 'new-password',
       type: 'password',
       validators: [Validators.required, passwordsMatch],
       validationErrorMessages: {
@@ -125,8 +148,10 @@ export class Signup {
     try {
       await this.usersService.signup(signupUser);
     } catch (errorResponse: any) {
+      console.log(errorResponse);
       this.generalError.set(
-        errorResponse.message || 'Ha ocurrido un error inesperado. Vuelve a intentarlo más tarde.',
+        errorResponse.error.message ||
+          'Ha ocurrido un error inesperado. Vuelve a intentarlo más tarde.',
       );
     }
   }

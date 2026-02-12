@@ -5,6 +5,7 @@ export interface IFormInput {
   type?: string;
   label: string;
   value: any;
+  autocomplete?: string;
   validators: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null;
   validationErrorMessages?: { [key: string]: string };
 }

@@ -43,7 +43,7 @@ export class AuthService {
     try {
       await lastValueFrom(
         this.httpClient.post<void>(`${this.endpoint}/validate`, {
-          acess_token: this.accessToken,
+          access_token: this.accessToken,
         }),
       );
       return true;

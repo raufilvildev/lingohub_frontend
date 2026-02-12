@@ -20,12 +20,14 @@ export class Login {
       name: 'username',
       label: 'Usuario',
       value: '',
+      autocomplete: 'username',
       validators: null,
     },
     {
       name: 'password',
       label: 'Contraseña',
       value: '',
+      autocomplete: 'current-password',
       type: 'password',
       validators: null,
     },
@@ -45,7 +47,8 @@ export class Login {
       await this.authService.login(loginUser);
     } catch (errorResponse: any) {
       this.generalError.set(
-        errorResponse.message || 'Ha ocurrido un error inesperado. Vuelve a intentarlo más tarde.',
+        errorResponse.error.message ||
+          'Ha ocurrido un error inesperado. Vuelve a intentarlo más tarde.',
       );
     }
   }

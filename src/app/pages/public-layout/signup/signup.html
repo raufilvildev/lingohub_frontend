@@ -6,7 +6,7 @@
         class="w-full"
         [inputs]="inputs"
         (isFormValidOutput)="IsSignupFormValid.set($event)"
-        (formValueOutput)="signupUser.set($event)"
+        (formValueOutput)="signupForm.set($event)"
       ></app-form>
       <div class="flex flex-col gap-5">
         @if (generalError()) {

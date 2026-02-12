@@ -28,6 +28,7 @@
                 : 'password'
               : (input.type ?? 'text')
           "
+          [autocomplete]="input.autocomplete ?? ''"
           class="w-full input"
           [class.input-with-icon]="isInputTypePassword"
           [class.input-error]="invalidControl"
