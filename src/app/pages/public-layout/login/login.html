@@ -1,4 +1,4 @@
-<div class="w-full p-5 flex items-center">
+<div class="w-full p-5 flex items-center" (keydown.enter)="login()">
   <div class="w-full max-w-100 mx-auto flex flex-col gap-10">
     <h2 class="font-bold text-xl mx-auto">Inicia sesión en LingoHub</h2>
     <app-form
@@ -11,7 +11,9 @@
       @if (generalError()) {
         <p class="text-error text-center">{{ generalError() }}</p>
       }
-      <button class="primary-button w-fit mx-auto" (click)="login()">Iniciar sesión</button>
+      <button type="submit" class="primary-button w-fit mx-auto" (click)="login()">
+        Iniciar sesión
+      </button>
     </div>
   </div>
 </div>

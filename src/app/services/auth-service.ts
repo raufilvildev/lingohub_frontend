@@ -15,57 +15,19 @@ export class AuthService {
 
   private endpoint: string = `${environment.apiUrl}/auth`;
 
-  private accessToken: string | null = null;
-
-  setAccessToken(token: string | null): void {
-    this.accessToken = token;
-  }
-
-  getAccessToken(): string | null {
-    return this.accessToken;
-  }
-
   async login(loginUser: ILoginUser): Promise<void> {
-    const result: ITokenResponse = await lastValueFrom(
-      this.httpClient.post<ITokenResponse>(`${this.endpoint}/login`, loginUser, {
+    await lastValueFrom(
+      this.httpClient.post<void>(`${this.endpoint}/login`, loginUser, {
         withCredentials: true,
       }),
     );
-    this.setAccessToken(result.access_token);
     this.router.navigate(['/dashboard']);
   }
 
   async logout(): Promise<void> {
-    this.setAccessToken(null);
-    await this.httpClient.post<void>(`${this.endpoint}/logout`, {}, { withCredentials: true });
+    await lastValueFrom(
+      this.httpClient.post<void>(`${this.endpoint}/logout`, {}, { withCredentials: true }),
+    );
     this.router.navigate(['/']);
-  }
-
-  async isAccessTokenValid(): Promise<boolean> {
-    try {
-      await lastValueFrom(
-        this.httpClient.post<void>(`${this.endpoint}/validate`, {
-          access_token: this.accessToken,
-        }),
-      );
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  async refresh(): Promise<void> {
-    try {
-      const result: ITokenResponse = await lastValueFrom(
-        this.httpClient.post<ITokenResponse>(
-          `${this.endpoint}/refresh`,
-          {},
-          { withCredentials: true },
-        ),
-      );
-      this.setAccessToken(result.access_token);
-    } catch (errorResponse: any) {
-      this.setAccessToken(null);
-    }
   }
 }

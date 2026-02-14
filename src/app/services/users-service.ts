@@ -21,29 +21,40 @@ export class UsersService {
 
   private user: WritableSignal<IUser | null> = signal(null);
 
-  async getMyUser(): Promise<void> {
+  async getMyUser(): Promise<IUser | null> {
     try {
-      this.user.set(await lastValueFrom(this.httpClient.get<IUser>(`${this.endpoint}/me`)));
+      this.user.set(
+        await lastValueFrom(
+          this.httpClient.get<IUser>(`${this.endpoint}/me`, { withCredentials: true }),
+        ),
+      );
     } catch (error) {
       this.user.set(null);
+    } finally {
+      return this.getUser();
     }
   }
 
+  getUser(): IUser | null {
+    const user: IUser | null = this.user();
+    if (!user) return null;
+    return { ...user };
+  }
+
   async signup(signupUser: ISignupUser): Promise<void> {
-    const result: ITokenResponse = await lastValueFrom(
-      this.httpClient.post<ITokenResponse>(`${this.endpoint}/signup`, signupUser, {
+    await lastValueFrom(
+      this.httpClient.post<void>(`${this.endpoint}/signup`, signupUser, {
         withCredentials: true,
       }),
     );
-    this.authService.setAccessToken(result.access_token);
     this.router.navigate(['/dashboard']);
   }
 
   async update(updateUser: IUpdateUser): Promise<void> {
-    const result: ITokenResponse = await lastValueFrom(
-      this.httpClient.put<ITokenResponse>(this.endpoint, updateUser, { withCredentials: true }),
+    await lastValueFrom(
+      this.httpClient.put<void>(this.endpoint, updateUser, { withCredentials: true }),
     );
-    this.authService.setAccessToken(result.access_token);
+    this.getMyUser();
   }
 
   async delete(): Promise<void> {
