@@ -141,8 +141,7 @@ export class Signup {
     this.generalError.set('');
     const signupUser: ISignupUser | null = this.signupUser();
 
-    if (!signupUser) {
-      this.generalError.set('Credenciales incorrectas.');
+    if (!signupUser || !this.IsSignupFormValid()) {
       return;
     }
     try {
